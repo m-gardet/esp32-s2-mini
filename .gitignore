@@ -1,0 +1,12 @@
+# esp-idf
+managed_components
+sdkconfig
+.esp-idf.cfg
+dependencies.lock
+
+# build
+build
+
+# docker
+.bash_history
+.bash_history_podman
