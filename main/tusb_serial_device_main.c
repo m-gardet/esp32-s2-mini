@@ -11,6 +11,9 @@
 #include "freertos/queue.h"
 #include "tinyusb.h"
 #include "tusb_cdc_acm.h"
+#if (CONFIG_TINYUSB_CDC_COUNT > 1)
+#include "tusb_console.h"
+#endif
 #include "sdkconfig.h"
 
 static const char *TAG = "example";
@@ -111,12 +114,16 @@ void app_main(void)
                         &tinyusb_cdc_line_state_changed_callback));
 
 #if (CONFIG_TINYUSB_CDC_COUNT > 1)
-    acm_cfg.cdc_port = TINYUSB_CDC_ACM_1;
-    ESP_ERROR_CHECK(tusb_cdc_acm_init(&acm_cfg));
+    tinyusb_config_cdcacm_t acm_cfg_console = { 0 };
+    acm_cfg_console.cdc_port = TINYUSB_CDC_ACM_1;
+    ESP_ERROR_CHECK(tusb_cdc_acm_init(&acm_cfg_console));
+    /*
     ESP_ERROR_CHECK(tinyusb_cdcacm_register_callback(
                         TINYUSB_CDC_ACM_1,
                         CDC_EVENT_LINE_STATE_CHANGED,
                         &tinyusb_cdc_line_state_changed_callback));
+    */
+    esp_tusb_init_console(TINYUSB_CDC_ACM_1); // log to usb
 #endif
 
     ESP_LOGI(TAG, "USB initialization DONE");
